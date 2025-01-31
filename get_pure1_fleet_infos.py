@@ -2,14 +2,22 @@
 """
 Retrieve and display information about Pure1 arrays fleet, such as total capacity,
 data reduction, load and system space. 
-Connection Pure1 REST API using 2 parameters:
-    - private key
+Connection to Pure1 REST API is done using 2 parameters:
+    - path to private key
     - application ID.
+
+Usage:
+    usage: get_pure1_fleet_infos.py [-h] [-p PASSWORD] pure1_api_id pure1_pk_file
+
+Example:
+   % python3 get_pure1_fleet_infos.py  pure1:apikey:DSIxxxxxx2FGCADN /Users/user1/.ssh/my_ssh_private_key.pem
 """
 
 import argparse
 import datetime
+import logging
 
+# The Pure Storage python module for Pure1, Flasharray and Flashblade
 from pypureclient import pure1
 
 # Constants
@@ -18,7 +26,10 @@ REPORTING_INTERVAL_DAYS = 7
 BYTES_IN_A_TERABYTE = 1_099_511_627_776
 BYTES_IN_A_GIGABYTE = 1_073_741_824
 
-def get_system_space(pure1_api_id, pure1_pk_file, pure1_pk_pwd):
+# Lower the logger level for the pypureclient logger
+logging.getLogger("pypureclient").setLevel(logging.ERROR)
+
+def get_pure1_fleet_information(pure1_api_id, pure1_pk_file, pure1_pk_pwd):
     """
     Retrieve system space and other metrics for all Pure1 arrays associated with
     the specified API ID and private key.
@@ -27,18 +38,21 @@ def get_system_space(pure1_api_id, pure1_pk_file, pure1_pk_pwd):
     :param pure1_pk_file: (str) Path to the Pure1 API Client Private Key file.
     :param pure1_pk_pwd: (str) Password for the private key file (if encrypted).
     """
+    
     # Create a Pure1 Client instance
     pure1_client = pure1.Client(
         private_key_file=pure1_pk_file,
         private_key_password=pure1_pk_pwd,
-        app_id=pure1_api_id
+        app_id=pure1_api_id,
+        timeout=15  # Should be an integer
     )
 
-    # Retrieve the list of arrays
+    # Retrieve the list of fleet arrays (FlashArray and Flashblade)
     response = pure1_client.get_arrays()
     arrays = list(response.items) if response and response.items else []
 
-    print("List of Pure1 arrays:")
+    print("List of Pure1 fleet arrays")
+    print("==========================")
     for array in arrays:
         name = array.name
         os_version = array.version
@@ -101,14 +115,14 @@ def get_system_space(pure1_api_id, pure1_pk_file, pure1_pk_pwd):
                         array_load = value
 
         # Print out the information about this array
-        print(f"\tArray Name: {name}")
-        print(f"\t\tModel: {model}")
-        print(f"\t\tPurity Version: {os_version}")
-        print(f"\t\tTotal Capacity (TB): {total_capacity_tb:.2f}")
-        print(f"\t\tEffective Used Space (GB): {effective_used_space_gb:.2f}")
-        print(f"\t\tData Reduction: {data_reduction:.2f}")
-        print(f"\t\tSystem Space (GB): {system_space_gb:.2f}")
-        print(f"\t\tArray Load (avg): {array_load:.2f}")
+        print(f"Array Name: {name}")
+        print(f"\tModel: {model}")
+        print(f"\tPurity Version: {os_version}")
+        print(f"\tTotal Capacity (TB): {total_capacity_tb:.2f}")
+        print(f"\tEffective Used Space (GB): {effective_used_space_gb:.2f}")
+        print(f"\tData Reduction: {data_reduction:.2f}")
+        print(f"\tSystem Space (GB): {system_space_gb:.2f}")
+        print(f"\tArray Load (avg): {array_load:.2f}")
 
 def main():
     """
@@ -127,7 +141,7 @@ def main():
     args = parser.parse_args()
 
     print("Retrieving array information and system space from Pure1...")
-    get_system_space(args.pure1_api_id, args.pure1_pk_file, args.password)
+    get_pure1_fleet_information(args.pure1_api_id, args.pure1_pk_file, args.password)
 
 if __name__ == "__main__":
     main()
