@@ -73,5 +73,11 @@ This mechanism ensures secure, authenticated access to Pure1’s data and servic
     
 ## Python packages
 
+Install the requred python packages:
+
+   pip install -r requirements.tx
 
 ## Run your first Pure1 API client python script (/arrays endpoint)
+
+   % python3 get_pure1_fleet_infos.py  pure1:apikey:DSIxxxxxx2FGCADN /Users/user1/.ssh/my_ssh_private_key.pem
+
