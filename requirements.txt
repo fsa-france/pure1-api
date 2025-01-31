@@ -1,0 +1,5 @@
+PyJWT>=2.0.0
+paramiko>=2.7.0
+requests>=2.25.0
+cryptography>=3.3.0
+six>=1.15.0
