@@ -69,15 +69,13 @@ Pure1 uses a JWT-based flow that follows the OAuth 2.0 pattern, closely resembli
 
 This mechanism ensures secure, authenticated access to Pure1’s data and services.
 
-
-    
 ## Python packages
 
 Install the requred python packages:
 
-   pip install -r requirements.tx
+    % pip install -r requirements.tx
 
 ## Run your first Pure1 API client python script (/arrays endpoint)
 
-   % python3 get_pure1_fleet_infos.py  pure1:apikey:DSIxxxxxx2FGCADN /Users/user1/.ssh/my_ssh_private_key.pem
+    % python3 get_pure1_fleet_infos.py  pure1:apikey:DSIxxxxxx2FGCADN /Users/user1/.ssh/my_ssh_private_key.pem
 
